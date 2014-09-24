@@ -1,0 +1,39 @@
+-- Create table u_data
+CREATE TABLE IF NOT EXISTS u_data (
+  userid INT,
+  movieid INT,
+  rating INT,
+  unixtime STRING)
+ROW FORMAT DELIMITED
+FIELDS TERMINATED BY '\t'
+STORED AS TEXTFILE;
+
+-- load data set
+LOAD DATA LOCAL INPATH 'data/movielens-100k/u.data'
+OVERWRITE INTO TABLE u_data;
+
+-- count no. of rows in table u_data
+SELECT COUNT(*) FROM u_data;
+
+-- Use the mapper script
+CREATE TABLE IF NOT EXISTS u_data_new (
+  userid INT,
+  movieid INT,
+  rating INT,
+  weekday INT)
+ROW FORMAT DELIMITED
+FIELDS TERMINATED BY '\t';
+
+add FILE weekday_mapper.py;
+
+INSERT OVERWRITE TABLE u_data_new
+SELECT
+  TRANSFORM (userid, movieid, rating, unixtime)
+  USING 'python weekday_mapper.py'
+  AS (userid, movieid, rating, weekday)
+FROM u_data;
+
+SELECT weekday, COUNT(*)
+FROM u_data_new
+GROUP BY weekday;
+

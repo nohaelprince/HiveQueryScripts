@@ -1,0 +1,10 @@
+Deleted hdfs://localhost:9000/user/hive/warehouse/u_data
+100000
+Deleted hdfs://localhost:9000/user/hive/warehouse/u_data_new
+1	13278
+2	14816
+3	15426
+4	13774
+5	17964
+6	12318
+7	12424
